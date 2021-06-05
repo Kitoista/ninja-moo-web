@@ -1,0 +1,9 @@
+{
+    "ports": {
+        "Galaxy": 19969,
+        "War": 19970,
+        "Old": 19971
+    },
+    "logOnly": true,
+    "silent": false
+}
