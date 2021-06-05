@@ -1,6 +1,6 @@
 export const environment = {
-    production: true,
-    appHost: "localhost:4201",
+    production: false,
+    appHost: "http://109.228.61.190:4201",
     urls: {
         get: {
             status: "/status",

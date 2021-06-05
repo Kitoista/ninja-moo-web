@@ -9,7 +9,7 @@ const port = 4201;
 const settings = require('./settings.json');
 
 app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', 'http://localhost:4201/');
+    res.append('Access-Control-Allow-Origin', ['http://localhost:4201/', 'http://109.228.61.190:4201/']);
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.append('Access-Control-Allow-Headers', 'Content-Type');
     next();
