@@ -9,15 +9,18 @@ import { BackendService } from '../services/backend.service';
 export class MoomooComponent implements OnInit {
 
     @Input() name = "Moo Moo";
-    alive = true;
+    alive = false;
     files: any = [];
 
     constructor(private backend: BackendService) { }
 
     ngOnInit(): void {
+        this.backend.status(this.name).subscribe((res: any) => {
+            this.alive = res.alive;
+        });
         setInterval(() => {
-            this.backend.status(this.name).subscribe(res => {
-                console.log(res);
+            this.backend.status(this.name).subscribe((res: any) => {
+                this.alive = res.alive;
             });
         }, 20000);
     }
