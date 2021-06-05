@@ -50,10 +50,10 @@ getMooMoo = (stdout, moomoo) => {
 
 
 app.get('/status/:name', (req, res) => {
-    mooLog("-----------------------");
-    mooLog("STATUS " + req.params?.name);
-
     exec('list-moo', (error, stdout, stderr) => {
+        mooLog("-----------------------");
+        mooLog("STATUS " + req.params?.name);
+        
         if (error) {
             mooError("list-moo failed");
             res.status(500).json({ msg: "list-moo failed.", error: stderr });
@@ -111,37 +111,42 @@ app.post('/kill', (req, res) => {
     mooLog("-----------------------");
     mooLog("KILL " + req.body?.name);
 
-    exec('list-moo', (error, stdout, stderr) => {
-        if (error) {
-            console.error("list-moo failed");
-            res.status(500).json({ msg: "list-moo failed.", error: stderr });
-        } else {
-            let line = getMooMoo(stdout, req.body?.name);
-
-            if (line === null) {
-                mooLog(req.body?.name + " wasn't running anyways");
-                res.json({ msg: "It wasn't running anyways" });
+    if (Object.keys(settings.ports).includes(req.body?.name)) {
+        exec('list-moo', (error, stdout, stderr) => {
+            if (error) {
+                console.error("list-moo failed");
+                res.status(500).json({ msg: "list-moo failed.", error: stderr });
             } else {
-                let pid = line.split(" ")[0];
-                
-                if (settings.logOnly) {
-                    mooLog('I would say kill "' + pid + '", but logOnly ON');
-                    res.json({ msg: "LogOnly is turned on" });
+                let line = getMooMoo(stdout, req.body?.name);
+
+                if (line === null) {
+                    mooLog(req.body?.name + " wasn't running anyways");
+                    res.json({ msg: "It wasn't running anyways" });
                 } else {
-                    exec('kill ' + pid, (error2, stdout2, stderr2) => {
-                        if (error2) {
-                            mooError("kill " + req.body.name + " failed");
-                            res.status(500).json({ msg: "Failed to kill pid: " + pid, error: stderr2 });
-                        } else {
-                            res.json({ msg: "Successful" });
-                        }
-                    });
+                    let pid = line.split(" ")[0];
+                    
+                    if (settings.logOnly) {
+                        mooLog('I would say kill "' + pid + '", but logOnly ON');
+                        res.json({ msg: "LogOnly is turned on" });
+                    } else {
+                        exec('kill ' + pid, (error2, stdout2, stderr2) => {
+                            if (error2) {
+                                mooError("kill " + req.body.name + " failed");
+                                res.status(500).json({ msg: "Failed to kill pid: " + pid, error: stderr2 });
+                            } else {
+                                res.json({ msg: "Successful" });
+                            }
+                        });
+                    }
+
                 }
 
             }
-
-        }
-    });
+        });
+    } else {
+        mooError("No such moomoo version as " + req.body?.name);
+        res.status(403).json({ msg: "No such moomoo verison" });
+    };
 });
 
 app.post('/upload', (req, res) => {
