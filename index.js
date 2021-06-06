@@ -101,15 +101,10 @@ app.post('/api/host', (req, res) => {
                 if (line === null) {
                     mooLog(req.body?.name + " is not running yet.");
 
-                    exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => {
-                        if (error2) {
-                            mooError('host-' + req.body?.name + " failed");
-                            res.status(500).json({ msg: 'host-' + req.body?.name + " failed", error: stderr2 });
-                        } else {
-                            mooLog("Hosting " + req.body?.name);
-                            res.json({ msg: "Successful" });
-                        }
-                    });
+                    exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => { });
+
+                    mooLog("Host command done " + req.body?.name);
+                    res.json({ msg: "Host command sent" });
                 } else {
                     mooError(req.body?.name + " is already running.");
                     res.json({ msg: "Already running" });
