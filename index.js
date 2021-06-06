@@ -21,16 +21,13 @@ app.use(express.json());
 app.use(multer({ dest: __dirname + '/uploads' }).any());
 
 escapeShell = (cmd) => {
-    return '"' + cmd.replace(/(["'$`\\])/g,'\\$1') + '"';
+    return (cmd || "").split(' ')[0];
 };
 
 const listMooCommand = 'ps axf | grep Dream | grep -v grep';
 
 hostCommand = (name) => {
     name = escapeShell(name);
-    console.log(name);
-    console.log(settings.ports);
-    console.log(settings.ports[name]);
     return 'cd /root/.byond/' + name + ';' + 
            'DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &' +
            'disown';
