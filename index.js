@@ -29,8 +29,7 @@ const listMooCommand = 'ps axf | grep Dream | grep -v grep';
 hostCommand = (name) => {
     name = escapeShell(name);
     return 'cd /root/.byond/' + name + ';' + 
-           'DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &' +
-           'disown';
+           'nohup DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &';
 }
 
 mooLog = (stuff) => {
