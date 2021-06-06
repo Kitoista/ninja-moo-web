@@ -90,7 +90,9 @@ app.post('/api/host', (req, res) => {
     mooLog("-----------------------");
     mooLog("HOST " + req.body?.name);
 
-    if (Object.keys(settings.ports).includes(req.body?.name)) {
+    if (req.body?.password !== settings.password) {
+        res.status(403).json({ msg: "Failed", error: "Wrong password" });
+    } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         exec(listMooCommand, (error, stdout, stderr) => {
             if (error) {
                 mooError("list-moo failed");
@@ -121,7 +123,9 @@ app.post('/api/kill', (req, res) => {
     mooLog("-----------------------");
     mooLog("KILL " + req.body?.name);
 
-    if (Object.keys(settings.ports).includes(req.body?.name)) {
+    if (req.body?.password !== settings.password) {
+        res.status(403).json({ msg: "Failed", error: "Wrong password" });
+    } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         exec(listMooCommand, (error, stdout, stderr) => {
             if (error) {
                 console.error("list-moo failed");
@@ -160,7 +164,9 @@ app.post('/api/kill', (req, res) => {
 });
 
 app.post('/api/upload', (req, res) => {
-    if (req.files[0].mimetype == 'application/zip') {
+    if (req.body?.password !== settings.password) {
+        res.status(403).json({ msg: "Failed", error: "Wrong password" });
+    } else if (req.files[0].mimetype == 'application/zip') {
         req.body.name;
         req.files[0].originalName;
         res.json({ msg: "Upload " + req.body.name });

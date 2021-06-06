@@ -5,5 +5,6 @@
         "Old": 19971
     },
     "logOnly": true,
-    "silent": false
+    "silent": false,
+    "password": "lawgic"
 }

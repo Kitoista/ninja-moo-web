@@ -10,6 +10,12 @@
 <body>
     <div id="error" class="alert alert-danger">&nbsp;</div>
 
+    <div class="row">
+        <div class="col-md-2 offset-2">
+            <input class="password" type="password" placeholder="password">
+        </div>
+    </div>
+
     <div id="Galaxy" class="row moomoo">
         <div class="col-md-2 offset-md-2">
             <h3><span class="badge badge-pill badge-success status">Galaxy</span></h3>
@@ -61,6 +67,8 @@
         return $.ajax(data);
     }
     
+    const password = $('.password');
+
     $('.moomoo').each((i, element) => {
         const name = $(element).attr('id');
         
@@ -93,7 +101,10 @@
             mooAjax({
                 url: 'api/host',
                 method: 'POST',
-                data: { name: name },
+                data: {
+                    name: name,
+                    password: password.val(),
+                },
                 success: () => {
                     setTimeout(statusCheck, 2000);
                 },
@@ -105,7 +116,10 @@
             mooAjax({
                 url: 'api/kill',
                 method: 'POST',
-                data: { name: name },
+                data: {
+                    name: name,
+                    password: password.val(),
+                },
                 success: () => {
                     setTimeout(statusCheck, 2000);
                 },
@@ -119,6 +133,7 @@
                 method: 'POST',
                 data: {
                     name: name,
+                    password: password.val(),
                     // files: [],
                 }
             });
