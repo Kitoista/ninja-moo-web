@@ -29,7 +29,7 @@ const listMooCommand = 'ps axf | grep Dream | grep -v grep';
 hostCommand = (name) => {
     name = escapeShell(name);
     return 'cd /root/.byond/' + name + ';' + 
-           'DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &;' +
+           'DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &' +
            'disown';
 }
 
@@ -104,8 +104,8 @@ app.post('/api/host', (req, res) => {
 
                     exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => {
                         if (error2) {
-                            mooError(command + " failed");
-                            res.status(500).json({ msg: command + " failed", error: stderr2 });
+                            mooError('host-' + req.body?.name + " failed");
+                            res.status(500).json({ msg: 'host-' + req.body?.name + " failed", error: stderr2 });
                         } else {
                             mooLog("Hosting " + req.body?.name);
                             res.json({ msg: "Successful" });
