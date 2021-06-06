@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 app.use(express.json());
-app.use(multer({ dest: __dirname + '\\uploads' }).any());
+app.use(multer({ dest: __dirname + '/uploads' }).any());
 
 mooLog = (stuff) => {
     if (!settings.silent) {
@@ -50,7 +50,7 @@ getMooMoo = (stdout, moomoo) => {
 };
 
 app.get('/', function (req, res) {
-    res.sendFile(__dirname + '\\views\\index.html');
+    res.sendFile(__dirname + '/views/index.html');
 });
 
 app.get('/api/status/:name', (req, res) => {
