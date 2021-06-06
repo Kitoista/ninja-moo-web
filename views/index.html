@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Document</title>
+</head>
+<body>
+    <div id="error" class="alert alert-danger">&nbsp;</div>
+
+    <div id="Galaxy" class="row moomoo">
+        <div class="col-md-2 offset-md-2">
+            <h3><span class="badge badge-pill badge-success status">Galaxy</span></h3>
+        </div>
+        <div class="col-md-8">
+            <button class="host btn btn-success">Host</button>
+            <button class="kill btn btn-danger">Kill</button>
+            <input class="fileInput" type="file" id="myFile" name="filename">
+            <button class="upload btn btn-primary" >Upload</button>
+        </div>
+    </div>
+
+    <div id="War" class="row moomoo">
+        <div class="col-md-2 offset-md-2">
+            <h3><span class="badge badge-pill badge-success status">War</span></h3>
+        </div>
+        <div class="col-md-8">
+            <button class="host btn btn-success">Host</button>
+            <button class="kill btn btn-danger">Kill</button>
+            <input class="fileInput" type="file" id="myFile" name="filename">
+            <button class="upload btn btn-primary" >Upload</button>
+        </div>
+    </div>
+
+    <div id="Old" class="row moomoo">
+        <div class="col-md-2 offset-md-2">
+            <h3><span class="badge badge-pill badge-success status">Old</span></h3>
+        </div>
+        <div class="col-md-8">
+            <button class="host btn btn-success">Host</button>
+            <button class="kill btn btn-danger">Kill</button>
+            <input class="fileInput" type="file" id="myFile" name="filename">
+            <button class="upload btn btn-primary" >Upload</button>
+        </div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script>
+    const mooAjax = (data) => {
+        data.success = data.success || console.log;
+        data.error = data.error || (res => {
+            $('#error').text(res.responseJSON?.error);
+        });
+        data.contentType = data.contentType || 'application/json';
+        data.dataType = data.dataType || 'json';
+        data.async = data.async !== undefined ? data.async : true;
+        data.data = data.data !== undefined ? JSON.stringify(data.data) : undefined;
+        return $.ajax(data);
+    }
+    
+    $('.moomoo').each((i, element) => {
+        const name = $(element).attr('id');
+        
+        const status = $(element).find('.status');
+        const host = $(element).find('.host');
+        const kill = $(element).find('.kill');
+        const fileInput = $(element).find('.fileInput');
+        const upload = $(element).find('.upload');
+
+        const statusCheck = () => {
+            mooAjax({
+                url: 'api/status/' + name,
+                success: res => {
+                    if (res.alive) {
+                        status.addClass('badge-success');
+                        status.removeClass('badge-danger');
+                    } else {
+                        status.removeClass('badge-success');
+                        status.addClass('badge-danger');
+                    }
+                },
+            });
+        };
+        
+        statusCheck();
+        setInterval(statusCheck, 20000);
+
+        host.click(e => {
+            e.preventDefault();
+            mooAjax({
+                url: 'api/host',
+                method: 'POST',
+                data: { name: name },
+                success: statusCheck,
+            });
+        });
+
+        kill.click(e => {
+            e.preventDefault();
+            mooAjax({
+                url: 'api/kill',
+                method: 'POST',
+                data: { name: name },
+                success: statusCheck,
+            });
+        });
+
+        upload.click(e => {
+            e.preventDefault();
+            mooAjax({
+                url: 'api/upload',
+                method: 'POST',
+                data: {
+                    name: name,
+                    // files: [],
+                }
+            });
+        });
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</html>

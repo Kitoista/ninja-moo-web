@@ -8,6 +8,8 @@ const port = 4201;
 
 const settings = require('./settings.json');
 
+app.set('view engine', 'ejs');
+
 app.use((req, res, next) => {
     res.append('Access-Control-Allow-Origin', ['http://localhost:4201/', 'http://109.228.61.190:4201/']);
     res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -47,9 +49,11 @@ getMooMoo = (stdout, moomoo) => {
     return correctLine;
 };
 
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '\\views\\index.html');
+});
 
-
-app.get('/status/:name', (req, res) => {
+app.get('/api/status/:name', (req, res) => {
     exec('list-moo', (error, stdout, stderr) => {
         mooLog("-----------------------");
         mooLog("STATUS " + req.params?.name);
@@ -70,7 +74,7 @@ app.get('/status/:name', (req, res) => {
     });
 });
 
-app.post('/host', (req, res) => {
+app.post('/api/host', (req, res) => {
     mooLog("-----------------------");
     mooLog("HOST " + req.body?.name);
 
@@ -107,7 +111,7 @@ app.post('/host', (req, res) => {
     }
 });
 
-app.post('/kill', (req, res) => {
+app.post('/api/kill', (req, res) => {
     mooLog("-----------------------");
     mooLog("KILL " + req.body?.name);
 
@@ -149,7 +153,7 @@ app.post('/kill', (req, res) => {
     };
 });
 
-app.post('/upload', (req, res) => {
+app.post('/api/upload', (req, res) => {
     if (req.files[0].mimetype == 'application/zip') {
         req.body.name;
         req.files[0].originalName;
