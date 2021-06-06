@@ -94,7 +94,9 @@
                 url: 'api/host',
                 method: 'POST',
                 data: { name: name },
-                success: statusCheck,
+                success: () => {
+                    setTimeout(statusCheck, 1000);
+                },
             });
         });
 
@@ -104,7 +106,9 @@
                 url: 'api/kill',
                 method: 'POST',
                 data: { name: name },
-                success: statusCheck,
+                success: () => {
+                    setTimeout(statusCheck, 1000);
+                },
             });
         });
 
