@@ -20,6 +20,18 @@ app.use(cors());
 app.use(express.json());
 app.use(multer({ dest: __dirname + '/uploads' }).any());
 
+escapeShell = (cmd) => {
+    return '"' + cmd.replace(/(["'$`\\])/g,'\\$1') + '"';
+};
+
+const listMooCommand = 'ps axf | grep Dream | grep -v grep';
+
+hostCommand = (name) => {
+    name = escapeShell(name);
+    return 'cd /root/.byond/' + name + ';' + 
+           'DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &';
+}
+
 mooLog = (stuff) => {
     if (!settings.silent) {
         console.log(stuff);
@@ -54,8 +66,8 @@ app.get('/', function (req, res) {
 });
 
 app.get('/api/status/:name', (req, res) => {
-    exec('list-moo', (error, stdout, stderr) => {
-        mooLog("-----------------------");
+    exec(listMooCommand, (error, stdout, stderr) => {
+    mooLog("-----------------------");
         mooLog("STATUS " + req.params?.name);
         
         if (error) {
@@ -79,7 +91,7 @@ app.post('/api/host', (req, res) => {
     mooLog("HOST " + req.body?.name);
 
     if (Object.keys(settings.ports).includes(req.body?.name)) {
-        exec('list-moo', (error, stdout, stderr) => {
+        exec(listMooCommand, (error, stdout, stderr) => {
             if (error) {
                 mooError("list-moo failed");
                 res.status(500).json({ msg: "list-moo failed.", error: stderr });
@@ -89,8 +101,7 @@ app.post('/api/host', (req, res) => {
                 if (line === null) {
                     mooLog(req.body?.name + " is not running yet.");
 
-                    let command = req.body?.name.toLowerCase() + '-moo';
-                    exec(command, (error2, stdout2, stderr2) => {
+                    exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => {
                         if (error2) {
                             mooError(command + " failed");
                             res.status(500).json({ msg: command + " failed", error: stderr2 });
@@ -116,7 +127,7 @@ app.post('/api/kill', (req, res) => {
     mooLog("KILL " + req.body?.name);
 
     if (Object.keys(settings.ports).includes(req.body?.name)) {
-        exec('list-moo', (error, stdout, stderr) => {
+        exec(listMooCommand, (error, stdout, stderr) => {
             if (error) {
                 console.error("list-moo failed");
                 res.status(500).json({ msg: "list-moo failed.", error: stderr });
