@@ -102,7 +102,7 @@ app.get('/api/versions/:name', function (req, res) {
                 mooError("list-versions failed");
                 res.status(500).json({ msg: "list-versions failed.", error: stderr });
             } else {
-                res.json({ versions: (stdout || "").split(" ") });
+                res.json({ versions: (stdout || "").split("\n") });
             }
         });
     } else {
