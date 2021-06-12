@@ -8,6 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <title>Document</title>
 </head>
 <body>
@@ -84,6 +85,9 @@
                                 <br>
                                 <br>
                                 <input type="submit">
+                                <i class="fa fa-refresh text-primary icn-spinner upload-progress" aria-hidden="true" style="display: none;"></i>
+                                <i class="fa fa-check text-success upload-success" aria-hidden="true" style="display: none;"></i>
+                                <i class="fa fa-times text-danger upload-failed" aria-hidden="true" style="display: none;"></i>
                             </form>
                         </td>
                         <td></td>
@@ -160,6 +164,9 @@
         const versionFile = $(element).find('.version-file');
         const versionName = $(element).find('.version-name');
         const upload = $(element).find('.upload');
+        const uploadProgress = $(element).find('.upload-progress');
+        const uploadSuccess = $(element).find('.upload-success');
+        const uploadFailed = $(element).find('.upload-failed');
 
         const statusCheck = () => {
             mooAjax({
@@ -266,10 +273,22 @@
             }
         });
 
+        const toggleUploadIcon = (icon) => {
+            uploadProgress.hide();
+            uploadSuccess.hide();
+            uploadFailed.hide();
+            if (icon) {
+                icon.show();
+            }
+        }
+        toggleUploadIcon();
+
         upload.submit(e => {
             e.preventDefault();
             const data = new FormData();
             
+            toggleUploadIcon(uploadProgress);
+
             data.append('name', name);
             data.append('password', password.val());
             data.append('versionName', versionName.val());
@@ -281,6 +300,19 @@
                 processData: false,
                 contentType: false,
                 data: data,
+                success: res => {
+                    toggleUploadIcon(uploadSuccess);
+                    setTimeout(() => {
+                        toggleUploadIcon();
+                    }, 2000);
+                },
+                error: res => {
+                    $('#error').text(res.responseJSON?.error);
+                    toggleUploadIcon(uploadFailed);
+                    setTimeout(() => {
+                        toggleUploadIcon();
+                    }, 2000);
+                }
             });
         });
     });
@@ -294,6 +326,20 @@
     }
     .templates {
         display: none;
+    }
+
+    .icn-spinner {
+        animation: spin-animation 1.5s infinite linear;
+        display: inline-block;
+    }
+
+    @keyframes spin-animation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(359deg);
+        }
     }
 </style>
 </html>
