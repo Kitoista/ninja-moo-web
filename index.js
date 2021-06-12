@@ -49,6 +49,14 @@ switchCommand = (name, newVersion) => {
            'echo ' + newVersion + ' > ' + settings.moomooFolder + name + '/version.txt';
 }
 
+uploadCommand = (name, versionName, versionFile) => {
+    name = escapeShell(name);
+    versionName = escapeShell(versionName);
+    versionFile = escapeShell(versionFile);
+    return 'unzip ' + __dirname + '/uploads/' + versionFile + ' -d ' + settings.versionsFolder + name + '/' + versionName + ';' + 
+           'rm ' + __dirname + '/uploads/' + versionFile;
+}
+
 mooLog = (stuff) => {
     if (!settings.silent) {
         console.log(stuff);
@@ -217,12 +225,26 @@ app.post('/api/switch', (req, res) => {
 app.post('/api/upload', (req, res) => {
     if (req.body?.password !== settings.password) {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
-    } else if (req.files[0].mimetype == 'application/zip') {
-        req.body.name;
-        req.files[0].originalName;
-        res.json({ msg: "Upload " + req.body.name });
+    } else if (Object.keys(settings.ports).includes(req.body?.name)) {
+        if (req.files.length > 0) {
+            if (req.files[0].mimetype == 'application/zip') {
+
+                exec(uploadCommand(req.body?.name, req.body?.versionName, req.files[0].filename), (error, stdout, stderr) => {
+                    if (stderr) {
+                        console.error("upload-moo failed");
+                        res.status(500).json({ msg: "upload-moo failed.", error: stderr });
+                    } else {
+                        res.json({ msg: "Success" });
+                    }
+                });
+            } else {
+                res.status(403).json({ msg: "It's not a zip" });
+            }
+        } else {
+            res.status(400).json({ msg: "No file uploaded" });
+        }
     } else {
-        res.status(403).json({ msg: "It's not a zip" });
+        res.status(403).json({ msg: "No such moomoo verison" });
     }
 });
 

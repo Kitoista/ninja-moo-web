@@ -71,30 +71,20 @@
                         </td>
                         <td></td>
                     </tr>
-                    <tr></tr>
                     <tr>
                         <td width="25%" style="white-space: nowrap;">
                             <h5>New version:</h5>
                         </td>
                         <td width="75%" style="white-space: nowrap;">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input fileInput">
-                                <label class="custom-file-label" >Choose a zip file...</label>
-                            </div>
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr class="borderless">
-                        <td></td>
-                        <td>
-                            <input class="form-control new-version-name" type="text" placeholder="Version name">
-                        </td>
-                        <td></td>
-                    </tr>
-                    <tr class="borderless">
-                        <td></td>
-                        <td>
-                            <button class="upload btn btn-sm btn-primary">Upload</button>
+                            <form class="upload">
+                                <input type="file" class="version-file" name="file">
+                                <br>
+                                <br>
+                                <input type="text" class="version-name" name="name" placeholder="Version name">
+                                <br>
+                                <br>
+                                <input type="submit">
+                            </form>
                         </td>
                         <td></td>
                     </tr>
@@ -110,10 +100,12 @@
         data.error = data.error || (res => {
             $('#error').text(res.responseJSON?.error);
         });
-        data.contentType = data.contentType || 'application/json';
-        data.dataType = data.dataType || 'json';
+        data.contentType = data.contentType !== undefined ? data.contentType : 'application/json';
+        // data.dataType = data.dataType || 'json';
         data.async = data.async !== undefined ? data.async : true;
-        data.data = data.data !== undefined ? JSON.stringify(data.data) : undefined;
+        if (data.contentType == 'application/json') {
+            data.data = data.data !== undefined ? JSON.stringify(data.data) : undefined;
+        }
         return $.ajax(data);
     }
 
@@ -165,7 +157,8 @@
         const currentVersion = $(element).find('.current-version');
         const availableVersions = $(element).find('.available-versions');
         const switchVersion = $(element).find('.switch');
-        const fileInput = $(element).find('.fileInput');
+        const versionFile = $(element).find('.version-file');
+        const versionName = $(element).find('.version-name');
         const upload = $(element).find('.upload');
 
         const statusCheck = () => {
@@ -273,16 +266,21 @@
             }
         });
 
-        upload.click(e => {
+        upload.submit(e => {
             e.preventDefault();
+            const data = new FormData();
+            
+            data.append('name', name);
+            data.append('password', password.val());
+            data.append('versionName', versionName.val());
+            data.append('versionFile', versionFile[0]?.files[0]);
+
             mooAjax({
                 url: 'api/upload',
                 method: 'POST',
-                data: {
-                    name: name,
-                    password: password.val(),
-                    // files: [],
-                }
+                processData: false,
+                contentType: false,
+                data: data,
             });
         });
     });
