@@ -2,9 +2,11 @@
     "ports": {
         "Galaxy": 19969,
         "War": 19970,
-        "Old": 19971
+        "Old": 19971,
+        "GalaxyTest": 4200 
     },
-    "logOnly": true,
+    "logOnly": false,
     "silent": false,
-    "password": "lawgic"
+    "password": "milkyway"
 }
+

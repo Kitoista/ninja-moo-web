@@ -45,7 +45,7 @@ mooError = (stuff) => {
 }
 
 getMooMoo = (stdout, moomoo) => {
-    let lines = stdout.split("\n");
+    let lines = (stdout || "").split("\n");
 
     let correctLine = null;
 
@@ -70,7 +70,7 @@ app.get('/api/status/:name', (req, res) => {
     mooLog("-----------------------");
         mooLog("STATUS " + req.params?.name);
         
-        if (error) {
+        if (stderr) {
             mooError("list-moo failed");
             res.status(500).json({ msg: "list-moo failed.", error: stderr });
         } else {
@@ -94,7 +94,7 @@ app.post('/api/host', (req, res) => {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         exec(listMooCommand, (error, stdout, stderr) => {
-            if (error) {
+            if (stderr) {
                 mooError("list-moo failed");
                 res.status(500).json({ msg: "list-moo failed.", error: stderr });
             } else {
@@ -127,7 +127,7 @@ app.post('/api/kill', (req, res) => {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         exec(listMooCommand, (error, stdout, stderr) => {
-            if (error) {
+            if (stderr) {
                 console.error("list-moo failed");
                 res.status(500).json({ msg: "list-moo failed.", error: stderr });
             } else {
