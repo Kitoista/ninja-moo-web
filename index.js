@@ -45,8 +45,6 @@ hostCommand = (name) => {
 switchCommand = (name, newVersion) => {
     name = escapeShell(name);
     newVersion = escapeShell(newVersion);
-    console.log('cp ' + settings.versionsFolder + name + '/' + newVersion + '/* ' + settings.moomooFolder + name + ';' +
-    'echo ' + newVersion + ' > ' + settings.moomooFolder + name + '/version.txt');
     return 'cp ' + settings.versionsFolder + name + '/' + newVersion + '/* ' + settings.moomooFolder + name + ';' +
            'echo ' + newVersion + ' > ' + settings.moomooFolder + name + '/version.txt';
 }
@@ -206,7 +204,7 @@ app.post('/api/switch', (req, res) => {
         exec(switchCommand(req.body?.name, req.body?.newVersion), (error, stdout, stderr) => {
             if (stderr) {
                 console.error("switch-moo failed");
-                res.status(500).json({ msg: "list-moo failed.", error: stderr });
+                res.status(500).json({ msg: "switch-moo failed.", error: stderr });
             } else {
                 res.json({ msg: "Success" });
             }
