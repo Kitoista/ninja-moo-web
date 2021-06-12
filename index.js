@@ -28,7 +28,7 @@ const listMooCommand = 'ps axf | grep Dream | grep -v grep';
 
 currentVersionCommand = (name) => {
     name = escapeShell(name);
-    return 'cat ' + settings.moomooFolder + name;
+    return 'cat ' + settings.moomooFolder + name + '/version.txt';
 }
 
 listVersionsCommand = (name) => {
