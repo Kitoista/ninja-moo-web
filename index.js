@@ -92,14 +92,12 @@ app.get('/api/currentVersion/:name', function (req, res) {
     if (Object.keys(settings.ports).includes(req.params?.name)) {
         exec(currentVersionCommand(req.params?.name), (error, stdout, stderr) => {
             if (stderr) {
-                mooError("current-version failed");
                 res.status(500).json({ msg: "current-version failed.", error: stderr });
             } else {
                 res.json({ version: stdout });
             }
         });
     } else {
-        mooError("No such moomoo version as " + req.body?.name);
         res.status(403).json({ msg: "No such moomoo verison" });
     }
 });
@@ -108,25 +106,19 @@ app.get('/api/versions/:name', function (req, res) {
     if (Object.keys(settings.ports).includes(req.params?.name)) {
         exec(listVersionsCommand(req.params?.name), (error, stdout, stderr) => {
             if (stderr) {
-                mooError("list-versions failed");
                 res.status(500).json({ msg: "list-versions failed.", error: stderr });
             } else {
                 res.json({ versions: (stdout || "").split("\n") });
             }
         });
     } else {
-        mooError("No such moomoo version as " + req.body?.name);
         res.status(403).json({ msg: "No such moomoo verison" });
     }
 })
 
 app.get('/api/status/:name', (req, res) => {
     exec(listMooCommand, (error, stdout, stderr) => {
-    mooLog("-----------------------");
-        mooLog("STATUS " + req.params?.name);
-        
         if (stderr) {
-            mooError("list-moo failed");
             res.status(500).json({ msg: "list-moo failed.", error: stderr });
         } else {
             let line = getMooMoo(stdout, req.params?.name);
@@ -142,15 +134,11 @@ app.get('/api/status/:name', (req, res) => {
 });
 
 app.post('/api/host', (req, res) => {
-    mooLog("-----------------------");
-    mooLog("HOST " + req.body?.name);
-
     if (req.body?.password !== settings.password) {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         exec(listMooCommand, (error, stdout, stderr) => {
             if (stderr) {
-                mooError("list-moo failed");
                 res.status(500).json({ msg: "list-moo failed.", error: stderr });
             } else {
                 let line = getMooMoo(stdout, req.body?.name);
@@ -163,21 +151,16 @@ app.post('/api/host', (req, res) => {
                     mooLog("Host command done " + req.body?.name);
                     res.json({ msg: "Host command sent" });
                 } else {
-                    mooError(req.body?.name + " is already running.");
                     res.json({ msg: "Already running" });
                 }
             }
         });
     } else {
-        mooError("No such moomoo version as " + req.body?.name);
         res.status(403).json({ msg: "No such moomoo verison" });
     }
 });
 
 app.post('/api/kill', (req, res) => {
-    mooLog("-----------------------");
-    mooLog("KILL " + req.body?.name);
-
     if (req.body?.password !== settings.password) {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
@@ -200,7 +183,6 @@ app.post('/api/kill', (req, res) => {
                     } else {
                         exec('kill ' + pid, (error2, stdout2, stderr2) => {
                             if (error2) {
-                                mooError("kill " + req.body.name + " failed");
                                 res.status(500).json({ msg: "Failed to kill pid: " + pid, error: stderr2 });
                             } else {
                                 res.json({ msg: "Successful" });
@@ -213,7 +195,6 @@ app.post('/api/kill', (req, res) => {
             }
         });
     } else {
-        mooError("No such moomoo version as " + req.body?.name);
         res.status(403).json({ msg: "No such moomoo verison" });
     };
 });
