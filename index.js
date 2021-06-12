@@ -79,7 +79,7 @@ app.get('/api/ping', function (req, res) {
     res.json({});
 });
 
-app.get('api/currentVersion/:name', function (req, res) {
+app.get('/api/currentVersion/:name', function (req, res) {
     if (Object.keys(settings.ports).includes(req.params?.name)) {
         exec(currentVersionCommand(req.params?.name), (error, stdout, stderr) => {
             if (stderr) {
