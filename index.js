@@ -26,6 +26,16 @@ escapeShell = (cmd) => {
 
 const listMooCommand = 'ps axf | grep Dream | grep -v grep';
 
+currentVersionCommand = (name) => {
+    name = escapeShell(name);
+    return 'cat ' + settings.moomooFolder + name;
+}
+
+listVersionsCommand = (name) => {
+    name = escapeShell(name);
+    return 'ls ' + settings.versionsFolder + name;
+};
+
 hostCommand = (name) => {
     name = escapeShell(name);
     return 'cd /root/.byond/' + name + ';' + 
@@ -64,6 +74,42 @@ getMooMoo = (stdout, moomoo) => {
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/views/index.html');
 });
+
+app.get('/api/ping', function (req, res) {
+    res.json({});
+});
+
+app.get('api/currentVersion/:name', function (req, res) {
+    if (Object.keys(settings.ports).includes(req.params?.name)) {
+        exec(currentVersionCommand(req.params?.name), (error, stdout, stderr) => {
+            if (stderr) {
+                mooError("current-version failed");
+                res.status(500).json({ msg: "current-version failed.", error: stderr });
+            } else {
+                res.json({ version: stdout });
+            }
+        });
+    } else {
+        mooError("No such moomoo version as " + req.body?.name);
+        res.status(403).json({ msg: "No such moomoo verison" });
+    }
+});
+
+app.get('/api/versions/:name', function (req, res) {
+    if (Object.keys(settings.ports).includes(req.params?.name)) {
+        exec(listVersionsCommand(req.params?.name), (error, stdout, stderr) => {
+            if (stderr) {
+                mooError("list-versions failed");
+                res.status(500).json({ msg: "list-versions failed.", error: stderr });
+            } else {
+                res.json({ versions: (stdout || "").split(" ") });
+            }
+        });
+    } else {
+        mooError("No such moomoo version as " + req.body?.name);
+        res.status(403).json({ msg: "No such moomoo verison" });
+    }
+})
 
 app.get('/api/status/:name', (req, res) => {
     exec(listMooCommand, (error, stdout, stderr) => {

@@ -5,6 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -12,60 +15,95 @@
 
     <div class="row">
         <div class="col-md-2 offset-2">
-            <input class="password" type="password" placeholder="password">
+            <h3><span class="badge badge-pill badge-success website-status">Website</span></h3>
+        </div>
+        <div class="col-md-2">
+            <input class="form-control password" type="password" placeholder="password">
         </div>
     </div>
 
-    <div id="Galaxy" class="row moomoo">
-        <div class="col-md-2 offset-md-2">
-            <h3><span class="badge badge-pill badge-success status">Galaxy</span></h3>
-        </div>
-        <div class="col-md-8">
-            <button class="host btn btn-success">Host</button>
-            <button class="kill btn btn-danger">Kill</button>
-            <input class="fileInput" type="file" id="myFile" name="filename">
-            <button class="upload btn btn-primary" >Upload</button>
-        </div>
-    </div>
+    <div class="moomoo-target" id="Galaxy"></div>
+    <div class="moomoo-target" id="War"></div>
+    <div class="moomoo-target" id="Old"></div>
+    <div class="moomoo-target" id="GalaxyTest"></div>
 
-    <div id="War" class="row moomoo">
-        <div class="col-md-2 offset-md-2">
-            <h3><span class="badge badge-pill badge-success status">War</span></h3>
+    <div class="templates">
+        <div class="moomoo-template moomoo">
+            <div class="row">
+                <div class="col-md-2 offset-md-2">
+                    <h3><span class="badge badge-pill badge-success status">{id}</span></h3>
+                </div>
+                <div class="col-md-8">
+                    <button class="host btn btn-success">Host</button>
+                    <button class="kill btn btn-danger">Kill</button>
+                    <button class="btn btn-dark" data-toggle="collapse" href="#{id}Version" role="button" aria-expanded="false" aria-controls="{id}Version">Version</button>
+                </div>    
+            </div>
+            <div class="version-target" id="{id}Version"></div>
         </div>
-        <div class="col-md-8">
-            <button class="host btn btn-success">Host</button>
-            <button class="kill btn btn-danger">Kill</button>
-            <input class="fileInput" type="file" id="myFile" name="filename">
-            <button class="upload btn btn-primary" >Upload</button>
-        </div>
-    </div>
 
-    <div id="Old" class="row moomoo">
-        <div class="col-md-2 offset-md-2">
-            <h3><span class="badge badge-pill badge-success status">Old</span></h3>
-        </div>
-        <div class="col-md-8">
-            <button class="host btn btn-success">Host</button>
-            <button class="kill btn btn-danger">Kill</button>
-            <input class="fileInput" type="file" id="myFile" name="filename">
-            <button class="upload btn btn-primary" >Upload</button>
-        </div>
-    </div>
+        <div class="collapse row version-template">
+            <div class="card card-body col-md-8 offset-2">
 
-    <div id="GalaxyTest" class="row moomoo">
-        <div class="col-md-2 offset-md-2">
-            <h3><span class="badge badge-pill badge-success status">GalaxyTest</span></h3>
-        </div>
-        <div class="col-md-8">
-            <button class="host btn btn-success">Host</button>
-            <button class="kill btn btn-danger">Kill</button>
-            <input class="fileInput" type="file" id="myFile" name="filename">
-            <button class="upload btn btn-primary" >Upload</button>
+                <table class="table">
+                    <tr class="borderless">
+                        <td width="25%" style="white-space: nowrap;">
+                            <h5>Current version:</h5>
+                        </td>
+                        <td width="25%">
+                            <h5><span class="badge badge-pil badge-secondary current-version">Unknown</span></h5>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td width="25%" style="white-space: nowrap;">
+                            <h5>Available versions:</h5>
+                        </td>
+                        <td>
+                            <select class="available-versions"></select>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="borderless">
+                        <td></td>
+                        <td>
+                            <button class="switch btn btn-sm btn-primary">Switch</button>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr></tr>
+                    <tr>
+                        <td width="25%" style="white-space: nowrap;">
+                            <h5>New version:</h5>
+                        </td>
+                        <td width="75%" style="white-space: nowrap;">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input fileInput">
+                                <label class="custom-file-label" >Choose a zip file...</label>
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="borderless">
+                        <td></td>
+                        <td>
+                            <input class="form-control new-version-name" type="text" placeholder="Version name">
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="borderless">
+                        <td></td>
+                        <td>
+                            <button class="upload btn btn-sm btn-primary">Upload</button>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
 </body>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script>
     const mooAjax = (data) => {
         data.success = data.success || console.log;
@@ -78,7 +116,41 @@
         data.data = data.data !== undefined ? JSON.stringify(data.data) : undefined;
         return $.ajax(data);
     }
+
+    const templateNames = ['moomoo', 'version'];
+
+    templateNames.forEach(name => {
+        $('.' + name + '-target').each((i, element) => {
+            const newTemplate = $('.templates .' + name + '-template').clone();
+            const target = $(element);
+
+            let text = newTemplate.html();
+            text = text.replaceAll('{id}', target.attr('id'));
+            newTemplate.html(text);
+            
+            newTemplate.attr('id', target.attr('id'));
+            target.replaceWith(newTemplate);
+        });
+    });
+
     
+    const websiteStatusCheck = () => {
+        mooAjax({
+            url: 'api/ping',
+            success: res => {
+                $('.website-status').addClass('badge-success');
+                $('.website-status').removeClass('badge-danger');
+            },
+            error: res => {
+                $('.website-status').removeClass('badge-success');
+                $('.website-status').addClass('badge-danger');
+            }
+        });
+    }
+
+    websiteStatusCheck();
+    setInterval(websiteStatusCheck, 20000);
+
     const password = $('.password');
 
     $('.moomoo').each((i, element) => {
@@ -87,6 +159,9 @@
         const status = $(element).find('.status');
         const host = $(element).find('.host');
         const kill = $(element).find('.kill');
+        const currentVersion = $(element).find('.current-version');
+        const availableVersions = $(element).find('.available-versions');
+        const switchVersion = $(element).find('.switch');
         const fileInput = $(element).find('.fileInput');
         const upload = $(element).find('.upload');
 
@@ -97,16 +172,55 @@
                     if (res.alive) {
                         status.addClass('badge-success');
                         status.removeClass('badge-danger');
+                        status.removeClass('badge-secondary');
                     } else {
                         status.removeClass('badge-success');
                         status.addClass('badge-danger');
+                        status.removeClass('badge-secondary');
                     }
                 },
+                error: res => {
+                    status.removeClass('badge-success');
+                    status.removeClass('badge-danger');
+                    status.addClass('badge-secondary');
+                }
+            });
+        };
+
+        const updateCurrentVersion = () => {
+            mooAjax({
+                url: 'api/currentVersion/' + name,
+                success: res => {
+                    currentVersion.text(res.version);
+                }
             });
         };
         
         statusCheck();
-        setInterval(statusCheck, 20000);
+        updateCurrentVersion();
+        setInterval(() => {
+            statusCheck();
+            updateCurrentVersion();
+        }, 20000);
+
+
+        availableVersions.select2({
+            placeholder: 'Choose a version...',
+            ajax: {
+                url: 'api/versions/' + name,
+                cache: false,
+                processResults: function (data) {
+                    return {
+                        results: data.versions?.map(d => ({
+                            id: d,
+                            text: d,
+                        }))
+                    };
+                }
+            }
+        });
+
+        // click events
 
         host.click(e => {
             e.preventDefault();
@@ -138,6 +252,21 @@
             });
         });
 
+        switchVersion.click(e => {
+            e.preventDefault();
+            if (availableVersions.val() !== null) {
+                mooAjax({
+                    url: 'api/switch',
+                    method: 'POST',
+                    data: {
+                        name: name,
+                        password: password.val(),
+                        newVersion: availableVersions.val(),
+                    }
+                });
+            }
+        });
+
         upload.click(e => {
             e.preventDefault();
             mooAjax({
@@ -151,7 +280,16 @@
             });
         });
     });
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<style>
+    .borderless td, .borderless th {
+        border: none;
+    }
+    .templates {
+        display: none;
+    }
+</style>
 </html>
