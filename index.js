@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(multer({ dest: __dirname + '/uploads' }).any());
 
 escapeShell = (cmd) => {
-    return (cmd || "").split(' ')[0];
+    return (cmd || "").split(' ')[0].split('\n')[0];
 };
 
 const listMooCommand = 'ps axf | grep Dream | grep -v grep';
@@ -38,8 +38,17 @@ listVersionsCommand = (name) => {
 
 hostCommand = (name) => {
     name = escapeShell(name);
-    return 'cd /root/.byond/' + name + ';' + 
+    return 'cd ' + settings.moomooFolder + name + ';' + 
            'nohup DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &';
+}
+
+switchCommand = (name, newVersion) => {
+    name = escapeShell(name);
+    newVersion = escapeShell(newVersion);
+    console.log('cp ' + settings.versionsFolder + name + '/' + newVersion + '/* ' + settings.moomooFolder + name + ';' +
+    'echo ' + newVersion + ' > ' + settings.moomooFolder + name + '/version.txt');
+    return 'cp ' + settings.versionsFolder + name + '/' + newVersion + '/* ' + settings.moomooFolder + name + ';' +
+           'echo ' + newVersion + ' > ' + settings.moomooFolder + name + '/version.txt';
 }
 
 mooLog = (stuff) => {
@@ -208,6 +217,23 @@ app.post('/api/kill', (req, res) => {
         res.status(403).json({ msg: "No such moomoo verison" });
     };
 });
+
+app.post('/api/switch', (req, res) => {
+    if (req.body?.password !== settings.password) {
+        res.status(403).json({ msg: "Failed", error: "Wrong password" });
+    } else if (Object.keys(settings.ports).includes(req.body?.name)) {
+        exec(switchCommand(req.body?.name, req.body?.newVersion), (error, stdout, stderr) => {
+            if (stderr) {
+                console.error("switch-moo failed");
+                res.status(500).json({ msg: "list-moo failed.", error: stderr });
+            } else {
+                res.json({ msg: "Success" });
+            }
+        });
+    } else {
+        res.status(403).json({ msg: "No such moomoo verison" });
+    };
+})
 
 app.post('/api/upload', (req, res) => {
     if (req.body?.password !== settings.password) {
