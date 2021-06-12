@@ -155,6 +155,9 @@
 
     $('.moomoo').each((i, element) => {
         const name = $(element).attr('id');
+        if (!name) {
+            return;
+        }
         
         const status = $(element).find('.status');
         const host = $(element).find('.host');
