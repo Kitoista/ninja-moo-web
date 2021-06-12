@@ -238,10 +238,10 @@ app.post('/api/upload', (req, res) => {
                     }
                 });
             } else {
-                res.status(403).json({ msg: "It's not a zip" });
+                res.status(403).json({ msg: "It's not a zip", error: 'Not a zip file' });
             }
         } else {
-            res.status(400).json({ msg: "No file uploaded" });
+            res.status(400).json({ msg: "No file uploaded", error: 'No file was sent' });
         }
     } else {
         res.status(403).json({ msg: "No such moomoo verison" });
