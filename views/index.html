@@ -265,6 +265,9 @@
                         name: name,
                         password: password.val(),
                         newVersion: availableVersions.val(),
+                    },
+                    success: res => {
+                        updateCurrentVersion();
                     }
                 });
             }
