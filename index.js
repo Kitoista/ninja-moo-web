@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 app.use(express.json());
-app.use(multer({ dest: __dirname + '/uploads' }).any());
+const upload = multer({ dest: __dirname + '/uploads' });
 
 escapeShell = (cmd) => {
     return (cmd || "").split(' ')[0].split('\n')[0];
@@ -222,14 +222,13 @@ app.post('/api/switch', (req, res) => {
     };
 })
 
-app.post('/api/upload', (req, res) => {
+app.post('/api/upload', upload.single('versionFile'), (req, res) => {
     if (req.body?.password !== settings.password) {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
-        if (req.files.length > 0) {
-            if (req.files[0].mimetype == 'application/zip') {
-
-                exec(uploadCommand(req.body?.name, req.body?.versionName, req.files[0].filename), (error, stdout, stderr) => {
+        if (req.file) {
+            if (req.file.mimetype == 'application/zip') {
+                exec(uploadCommand(req.body?.name, req.body?.versionName, req.file.filename), (error, stdout, stderr) => {
                     if (stderr) {
                         console.error("upload-moo failed");
                         res.status(500).json({ msg: "upload-moo failed.", error: stderr });
