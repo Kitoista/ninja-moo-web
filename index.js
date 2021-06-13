@@ -129,10 +129,8 @@ app.get('/api/status/:name', (req, res) => {
         } else {
             let line = getMooMoo(stdout, req.params?.name);
             if (line === null) {
-                mooLog(req.params?.name + " is not running");
                 res.json({ msg: "Success", alive: false });
             } else {
-                mooLog(req.params?.name + " is running");
                 res.json({ msg: "Success", alive: true });
             }
         }
@@ -150,11 +148,7 @@ app.post('/api/host', (req, res) => {
                 let line = getMooMoo(stdout, req.body?.name);
 
                 if (line === null) {
-                    mooLog(req.body?.name + " is not running yet.");
-
                     exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => { });
-
-                    mooLog("Host command done " + req.body?.name);
                     res.json({ msg: "Host command sent" });
                 } else {
                     res.json({ msg: "Already running" });
@@ -178,7 +172,6 @@ app.post('/api/kill', (req, res) => {
                 let line = getMooMoo(stdout, req.body?.name);
 
                 if (line === null) {
-                    mooLog(req.body?.name + " wasn't running anyways");
                     res.json({ msg: "It wasn't running anyways" });
                 } else {
                     let pid = line.split(" ")[0];
@@ -227,6 +220,7 @@ app.post('/api/upload', upload.single('versionFile'), (req, res) => {
         res.status(403).json({ msg: "Failed", error: "Wrong password" });
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         if (req.file) {
+            mooLog(req.file);
             if (req.file.mimetype == 'application/zip') {
                 exec(uploadCommand(req.body?.name, req.body?.versionName, req.file.filename), (error, stdout, stderr) => {
                     if (stderr) {
