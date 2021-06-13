@@ -221,7 +221,7 @@ app.post('/api/upload', upload.single('versionFile'), (req, res) => {
     } else if (Object.keys(settings.ports).includes(req.body?.name)) {
         if (req.file) {
             mooLog(req.file);
-            if (req.file.mimetype == 'application/zip') {
+            if (req.file.mimetype == 'application/zip' || req.file.mimetype == 'application/x-zip-compressed') {
                 exec(uploadCommand(req.body?.name, req.body?.versionName, req.file.filename), (error, stdout, stderr) => {
                     if (stderr) {
                         console.error("upload-moo failed");
