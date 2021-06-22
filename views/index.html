@@ -217,7 +217,18 @@
                         results: data.versions?.map(d => ({
                             id: d,
                             text: d,
-                        }))
+                        })).sort((a, b) => {
+                            const aMain = Number.parseInt(a.text.replace(/\D*/g, ''));
+                            const bMain = Number.parseInt(b.text.replace(/\D*/g, ''));
+                            if (aMain !== bMain) {
+                                return bMain - aMain;
+                            }
+                            const aMinor = a.text.toLowerCase().replace(/\d*/g, '');
+                            const bMinor = b.text.toLowerCase().replace(/\d*/g, '');
+                            if (aMinor === "") return 1;
+                            if (bMinor === "") return -1;
+                            return bMinor > aMinor ? 1 : -1;
+                        })
                     };
                 }
             }
