@@ -128,7 +128,7 @@ app.get('/api/status/:name', (req, res) => {
             res.status(500).json({ msg: "list-moo failed.", error: stderr });
         } else {
             let line = getMooMoo(stdout, req.params?.name);
-            if (line === null) {
+            if (line === null || line === "Galaxy") {
                 res.json({ msg: "Success", alive: false });
             } else {
                 res.json({ msg: "Success", alive: true });

@@ -176,7 +176,7 @@
             mooAjax({
                 url: 'api/status/' + name,
                 success: res => {
-                    if (res.alive) {
+                    if (res.alive && name !== 'Galaxy') {
                         status.addClass('badge-success');
                         status.removeClass('badge-danger');
                         status.removeClass('badge-secondary');
