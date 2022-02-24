@@ -3,6 +3,10 @@
         "Galaxy": 19969,
         "War": 19970,
         "Old": 19971,
+        "Custom": 19972,
+        "OnePiece": 19973,
+        "Newest": 19974,
+        "PSS": 19975,
         "GalaxyTest": 4200 
     },
     "logOnly": false,
