@@ -128,7 +128,7 @@
                             total = e.total; // total size of data to be uploaded
                             completed = Math.round((done / total * 1000) / 10); // this is where actual calculation takes place to show with of progressbar
                         }
-                        var prog= Math.round(completed)+'%' // you can skip the round
+                        var prog= Math.round(completed) // you can skip the round
                         $(data.progressbar).css('width', prog+'%').attr('aria-valuenow', prog);
                     }
                 }
