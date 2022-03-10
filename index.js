@@ -36,10 +36,10 @@ listVersionsCommand = (name) => {
     return 'ls ' + settings.versionsFolder + name;
 };
 
-hostCommand = (name) => {
+hostCommand = (name, isInvisible) => {
     name = escapeShell(name);
     return 'cd ' + settings.moomooFolder + name + ';' + 
-           'nohup DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted -logself &';
+           'nohup DreamDaemon NinjaMoo ' + settings.ports[name] + ' -trusted ' + (isInvisible ? '-invisible' : '') + ' -logself &';
 }
 
 switchCommand = (name, newVersion) => {
@@ -128,10 +128,12 @@ app.get('/api/status/:name', (req, res) => {
             res.status(500).json({ msg: "list-moo failed.", error: stderr });
         } else {
             let line = getMooMoo(stdout, req.params?.name);
-            if (line === null || line === "Galaxy") {
-                res.json({ msg: "Success", alive: false });
+            if (line === null) {
+                res.json({ msg: "Success", status: "offline" });
+            } else if (!line.includes("-invisible")) {
+                res.json({ msg: "Success", status: "online" });
             } else {
-                res.json({ msg: "Success", alive: true });
+                res.json({ msg: "Success", status: "invisible" });
             }
         }
     });
@@ -148,7 +150,7 @@ app.post('/api/host', (req, res) => {
                 let line = getMooMoo(stdout, req.body?.name);
 
                 if (line === null) {
-                    exec(hostCommand(req.body?.name), (error2, stdout2, stderr2) => { });
+                    exec(hostCommand(req.body?.name, req.body?.isInvisible), (error2, stdout2, stderr2) => { });
                     res.json({ msg: "Host command sent" });
                 } else {
                     res.json({ msg: "Already running" });

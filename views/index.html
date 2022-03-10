@@ -40,6 +40,7 @@
                 </div>
                 <div class="col-md-8">
                     <button class="host btn btn-success">Host</button>
+                    <button class="invisHost btn btn-info">Invis</button>
                     <button class="kill btn btn-danger">Kill</button>
                     <button class="btn btn-dark" data-toggle="collapse" href="#{id}Version" role="button" aria-expanded="false" aria-controls="{id}Version">Version</button>
                 </div>    
@@ -182,6 +183,7 @@
         
         const status = $(element).find('.status');
         const host = $(element).find('.host');
+        const invisHost = $(element).find('.invisHost');
         const kill = $(element).find('.kill');
         const currentVersion = $(element).find('.current-version');
         const availableVersions = $(element).find('.available-versions');
@@ -198,19 +200,22 @@
             mooAjax({
                 url: 'api/status/' + name,
                 success: res => {
-                    if (res.alive && name !== 'Galaxy') {
+                    status.removeClass('badge-success');
+                    status.removeClass('badge-danger');
+                    status.removeClass('badge-secondary');
+                    status.removeClass('badge-info');
+                    if (res.status === "online") {
                         status.addClass('badge-success');
-                        status.removeClass('badge-danger');
-                        status.removeClass('badge-secondary');
-                    } else {
-                        status.removeClass('badge-success');
+                    } else if (res.status == "offline") {
                         status.addClass('badge-danger');
-                        status.removeClass('badge-secondary');
+                    } else if (res.status == "invisible") {
+                        status.addClass('badge-info');
                     }
                 },
                 error: res => {
                     status.removeClass('badge-success');
                     status.removeClass('badge-danger');
+                    status.removeClass('badge-info');
                     status.addClass('badge-secondary');
                 }
             });
@@ -269,6 +274,23 @@
                 method: 'POST',
                 data: {
                     name: name,
+                    isInvisible: false,
+                    password: password.val(),
+                },
+                success: () => {
+                    setTimeout(statusCheck, 2000);
+                },
+            });
+        });
+
+        invisHost.click(e => {
+            e.preventDefault();
+            mooAjax({
+                url: 'api/host',
+                method: 'POST',
+                data: {
+                    name: name,
+                    isInvisible: true,
                     password: password.val(),
                 },
                 success: () => {
